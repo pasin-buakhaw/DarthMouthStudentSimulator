@@ -1,0 +1,325 @@
+week,topic,question,answer,point
+2,Layouts & Views Basics,"What is the main purpose of the AndroidManifest.xml file in an Android project?
+A) To define the app's user interface layout
+B) To declare app components, permissions, and configuration settings
+C) To store string resources and constants
+D) To contain the main application logic",B,1.166
+2,Layouts & Views Basics,"In an Android project structure, where are the layout XML files typically stored?
+A) app/src/main/java/
+B) app/src/main/assets/
+C) app/src/main/res/layout/
+D) app/src/main/res/values/",C,1.166
+2,Layouts & Views Basics,"Which method is called when an Android activity is first created?
+A) onStart()
+B) onResume()
+C) onCreate()
+D) onDestroy()",C,1.166
+2,Layouts & Views Basics,"What is the correct way to find a View by its ID in an Android activity?
+A) getView(R.id.viewId)
+B) findViewById(R.id.viewId)
+C) findView(R.id.viewId)
+D) getViewById(R.id.viewId)",B,1.166
+2,Layouts & Views Basics,"Which XML attribute is used to set the text content of a TextView?
+A) android:content
+B) android:value
+C) android:text
+D) android:title",C,1.166
+2,Layouts & Views Basics,"What is the most common parent layout used as the root element in Android XML layouts?
+A) RelativeLayout
+B) LinearLayout
+C) ConstraintLayout
+D) FrameLayout",C,1.166
+2,Layouts & Views Basics,"To handle a button click event in Android, which method should you implement?
+A) onTouch()
+B) onClick()
+C) onPress()
+D) onTap()",B,1.166
+2,Layouts & Views Basics,"In the project structure, what does the R class represent?
+A) Resources class that provides access to app resources
+B) Runtime class for app execution
+C) Request class for network operations
+D) Root class for the application",A,1.166
+2,Layouts & Views Basics,"Which XML attribute is used to assign a unique identifier to a View?
+A) android:name
+B) android:id
+C) android:identifier
+D) android:key",B,1.166
+2,Layouts & Views Basics,"For Lab 1's Hello World app, what is the correct way to change a TextView's text programmatically?
+A) textView.changeText(""New Text"")
+B) textView.updateText(""New Text"")
+C) textView.setText(""New Text"")
+D) textView.text = ""New Text""",C,1.166
+3,UI Components & Event Handling,"Which attribute is used to set the hint text for an EditText component?
+A) android:text
+B) android:hint
+C) android:placeholder
+D) android:helperText",B,1.166
+3,UI Components & Event Handling,"What method is called when a Button is clicked and an OnClickListener is implemented?
+A) onTouch()
+B) onPress()
+C) onClick()
+D) onTap()",C,1.166
+3,UI Components & Event Handling,"Which input type should be used for an EditText to accept only numeric values?
+A) android:inputType=""text""
+B) android:inputType=""number""
+C) android:inputType=""numeric""
+D) android:inputType=""integer""",B,1.166
+3,UI Components & Event Handling,"How do you programmatically set text in a TextView?
+A) textView.text = ""Hello""
+B) textView.setText(""Hello"")
+C) textView.setContent(""Hello"")
+D) textView.changeText(""Hello"")",B,1.166
+3,UI Components & Event Handling,"Which of the following is the correct way to implement OnClickListener using an anonymous inner class?
+A) button.setOnClickListener(new OnClickListener() { ... })
+B) button.setOnClickListener(new View.OnClickListener() { ... })
+C) button.setClickListener(new OnClickListener() { ... })
+D) button.addOnClickListener(new View.OnClickListener() { ... })",B,1.166
+3,UI Components & Event Handling,"What method is used to retrieve text from an EditText component?
+A) editText.getContent()
+B) editText.getValue()
+C) editText.getText()
+D) editText.readText()",C,1.166
+3,UI Components & Event Handling,"Which attribute makes a Button unclickable?
+A) android:clickable=""false""
+B) android:enabled=""false""
+C) android:disabled=""true""
+D) android:interactive=""false""",B,1.166
+3,UI Components & Event Handling,"In Kotlin, which of the following is the correct lambda syntax for OnClickListener?
+A) button.setOnClickListener { view -> // code }
+B) button.setOnClickListener(lambda { // code })
+C) button.setOnClickListener => { // code }
+D) button.setOnClickListener({ view } -> { // code })",A,1.166
+3,UI Components & Event Handling,"What does the following code do?
+kotlinval userInput = editText.getText().toString()
+if (userInput.isEmpty()) {
+    textView.setText(""Please enter some text"")
+}
+A) Clears the EditText if it's empty
+B) Checks if EditText is empty and shows a message in TextView
+C) Validates if the input is a valid string
+D) Converts EditText content to uppercase",B,1.166
+3,UI Components & Event Handling,"Which method should be called to find a view by its ID in an Activity?
+A) getViewById()
+B) findView()
+C) findViewById()
+D) locateView()",C,1.166
+4,Activities & Intents,"What is an explicit intent in Android development?
+A) An intent that doesn't specify the target component
+B) An intent that specifies the exact component (activity) to start
+C) An intent that can only be used within the same application
+D) An intent that requires user permission to execute",B,1.166
+4,Activities & Intents,"Which method is used to start a new activity using an explicit intent?
+A) startActivityForResult()
+B) startActivity()
+C) launchActivity()
+D) Both A and B are correct",D,1.166
+4,Activities & Intents,"What is the correct syntax to create an explicit intent to start SecondActivity from MainActivity?
+A) Intent intent = new Intent(this, SecondActivity.class);
+B) Intent intent = new Intent(SecondActivity.class);
+C) Intent intent = new Intent(""SecondActivity"");
+D) Intent intent = createIntent(SecondActivity.class);",A,1.166
+4,Activities & Intents,"How do you pass data from one activity to another using an explicit intent?
+A) intent.setData(""key"", ""value"");
+B) intent.putExtra(""key"", ""value"");
+C) intent.addData(""key"", ""value"");
+D) intent.insertExtra(""key"", ""value"");",B,1.166
+4,Activities & Intents,"In the receiving activity, which method is used to retrieve data passed through an intent?
+A) getIntent().getStringExtra(""key"");
+B) getExtras().getString(""key"");
+C) retrieveData(""key"");
+D) getData(""key"");",A,1.166
+4,Activities & Intents,"What happens when you call finish() method in an activity?
+A) The application terminates completely
+B) The current activity is destroyed and returns to the previous activity
+C) The activity is minimized to background
+D) All activities in the task stack are destroyed",B,1.166
+4,Activities & Intents,"Which lifecycle method is called when returning to an activity from another activity?
+A) onCreate()
+B) onStart()
+C) onResume()
+D) onRestart()",C,1.166
+4,Activities & Intents,"How do you handle the result returned from a child activity using startActivityForResult()?
+A) Override onActivityResult() method
+B) Override onResult() method
+C) Override onReturn() method
+D) Override onFinish() method",A,1.166
+4,Activities & Intents,"What is the purpose of request code in startActivityForResult(int requestCode)?
+A) To specify the priority of the activity
+B) To identify which activity returned the result in onActivityResult()
+C) To set the result code for the activity
+D) To define the activity's layout resource ID",B,1.166
+4,Activities & Intents,"Which of the following is required in AndroidManifest.xml for each activity?
+A) <activity android:name="".ActivityName"" />
+B) <intent-filter> for all activities
+C) android:exported=""true"" for all activities
+D) android:launchMode specification",A,1.166
+5,Layouts & UI Design,"Which layout is best suited for arranging views in a single row or column?
+A) RelativeLayout
+B) LinearLayout
+C) ConstraintLayout
+D) FrameLayout",B,1.166
+5,Layouts & UI Design,"In LinearLayout, which attribute is used to specify whether child views are arranged horizontally or vertically?
+A) android:layout_direction
+B) android:orientation
+C) android:layout_gravity
+D) android:gravity",B,1.166
+5,Layouts & UI Design,"What is the main advantage of ConstraintLayout over other layout types?
+A) It's easier to code manually
+B) It uses less memory
+C) It creates flat view hierarchies and provides flexible positioning
+D) It only works with Material Design",C,1.166
+5,Layouts & UI Design,"In RelativeLayout, which attribute would you use to position a view to the right of another view?
+A) android:layout_alignRight
+B) android:layout_toRightOf
+C) android:layout_centerHorizontal
+D) android:layout_marginRight",B,1.166
+5,Layouts & UI Design,"What does the android:layout_weight attribute do in LinearLayout?
+A) Sets the physical weight of the view
+B) Distributes available space proportionally among child views
+C) Controls the view's opacity
+D) Sets the view's priority in the layout",B,1.166
+5,Layouts & UI Design,"In ConstraintLayout, what does the following constraint mean: app:layout_constraintTop_toBottomOf=""@id/button1""?
+A) The view is positioned below button1
+B) The view is positioned above button1
+C) The view is aligned to the top of button1
+D) The view is centered vertically with button1",A,1.166
+5,Layouts & UI Design,"Which attribute is used to add internal spacing within a view?
+A) android:margin
+B) android:padding
+C) android:layout_margin
+D) android:spacing",B,1.166
+5,Layouts & UI Design,"In RelativeLayout, what does android:layout_centerInParent=""true"" do?
+A) Centers the view horizontally only
+B) Centers the view vertically only
+C) Centers the view both horizontally and vertically within the parent
+D) Aligns the view to the center-left of the parent",C,1.166
+5,Layouts & UI Design,"Which units are recommended for text sizes in Android to ensure proper scaling across different screen densities?
+A) px (pixels)
+B) dp (density-independent pixels)
+C) sp (scale-independent pixels)
+D) pt (points)",C,1.166
+5,Layouts & UI Design,"In ConstraintLayout, what happens if a view has constraints to both left and right edges of the parent with equal bias?
+A) The view will be positioned at the left edge
+B) The view will be positioned at the right edge
+C) The view will be centered horizontally
+D) The constraints will conflict and cause an error",C,1.166
+6,ListView & ArrayAdapter,"Which class is commonly used to bind an array of data to a ListView in Android?
+
+A) ArrayList
+B) ArrayAdapter
+C) BaseAdapter
+D) RecyclerViewAdapter",B,1.166
+6,ListView & ArrayAdapter,"What is the purpose of setAdapter() method in ListView?
+
+A) To set the layout of ListView
+B) To set the data source for ListView
+C) To set the orientation of ListView
+D) To set the click listener for ListView",B,1.166
+6,ListView & ArrayAdapter,"Which layout XML element is used to declare a ListView in your layout file?
+
+A) <TextView>
+B) <Button>
+C) <ListView>
+D) <RecyclerView>",C,1.166
+6,ListView & ArrayAdapter,"What is the correct constructor for creating an ArrayAdapter for a simple list item?
+
+A) new ArrayAdapter(this, R.layout.simple_list_item, dataList);
+B) new ArrayAdapter(this, android.R.layout.simple_list_item_1, dataList);
+C) new ArrayAdapter(this, dataList, R.layout.simple_list_item);
+D) new ArrayAdapter(dataList, this, android.R.layout.simple_list_item_1);",B,1.166
+6,ListView & ArrayAdapter,"Which method is used to handle click events on ListView items?
+
+A) setOnClickListener()
+B) setItemClickListener()
+C) setOnItemClickListener()
+D) setOnListItemClickListener()",C,1.166
+6,ListView & ArrayAdapter,"In the setOnItemClickListener(), what does the position parameter represent?
+
+A) The id of the item
+B) The view of the item clicked
+C) The position of the item clicked in the adapter
+D) The text of the item clicked",C,1.166
+6,ListView & ArrayAdapter,"Which interface must be implemented to listen to item click events in ListView?
+
+A) View.OnClickListener
+B) AdapterView.OnItemClickListener
+C) ListView.OnClickListener
+D) AdapterView.ItemClickListener",,1.166
+6,ListView & ArrayAdapter,"What happens if you do not set an adapter for your ListView?
+
+A) It displays default data
+B) It crashes immediately
+C) It displays as an empty list
+D) It shows a loading spinner",C,1.166
+6,ListView & ArrayAdapter,"Which method inflates the layout for each row in a custom ArrayAdapter?
+
+A) onCreateViewHolder()
+B) getView()
+C) bindView()
+D) inflateRow()",B,1.166
+6,ListView & ArrayAdapter," How can you update the ListView when the underlying data changes?
+
+A) Call adapter.notifyDataSetChanged()
+B) Call listView.refresh()
+C) Call setAdapter() again
+D) Call adapter.update()",A,1.166
+7,Data Storage,"What is the main purpose of SharedPreferences in Android?
+
+A) Store large files like videos
+B) Store simple key-value pairs of primitive data
+C) Store app resources
+D) Store SQLite database tables",B,1.166
+7,Data Storage,"Which method is used to obtain a SharedPreferences instance?
+
+A) getPreferences()
+B) getSharedPreferences()
+C) openPreferences()
+D) createPreferences()",B,1.166
+7,Data Storage,"What mode is used for SharedPreferences to be private to the application?
+
+A) MODE_WORLD_READABLE
+B) MODE_APPEND
+C) MODE_PRIVATE
+D) MODE_MULTI_PROCESS",C,1.166
+7,Data Storage,"What is the correct way to save data to SharedPreferences?
+
+A) Call putString() directly on SharedPreferences
+B) Call edit(), then put value, then apply() or commit()
+C) Call savePreferences()
+D) Use SharedPreferencesManager.save()",B,1.166
+7,Data Storage,"Which method is used to read a string value from SharedPreferences?
+
+A) getStringValue()
+B) getString()
+C) readString()
+D) fetchString()",B,1.166
+7,Data Storage,"What is the difference between commit() and apply() when saving SharedPreferences?
+
+A) commit() is asynchronous, apply() is synchronous
+B) Both are identical
+C) commit() is synchronous, apply() is asynchronous
+D) apply() saves to external storage, commit() saves internally",C,1.166
+7,Data Storage,"Which of the following data types can NOT be directly saved in SharedPreferences?
+
+A) String
+B) int
+C) boolean
+D) Object",D,1.166
+7,Data Storage,"What will happen if you call getString() with a non-existing key without specifying a default value?
+
+A) Returns null
+B) Throws an exception
+C) Returns empty string automatically
+D) Returns “undefined”",A,1.166
+7,Data Storage,"Which interface is used to listen to changes in SharedPreferences data?
+
+A) OnPreferenceChangeListener
+B) SharedPreferences.OnSharedPreferenceChangeListener
+C) PreferenceChangedListener
+D) SharedPreferencesChangeListener",B,1.166
+7,Data Storage,"Where is the SharedPreferences data stored by default?
+
+A) On external storage
+B) In SQLite database
+C) In an XML file in internal storage
+D) In the cloud",C,1.166
