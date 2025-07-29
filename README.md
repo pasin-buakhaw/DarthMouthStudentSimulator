@@ -1,4 +1,4 @@
-# Student Life Analysis Pipeline
+# LLM Agent-Based Simulation of Student Activities and Mental Health Using Smartphone Sensing Data
 
 A modular pipeline for analyzing student life data using Large Language Models (LLMs). This project aggregates student behavioral data and generates insightful weekly summaries using OpenAI and Anthropic APIs.
 
@@ -137,9 +137,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📚 Citation
 If you use this code in your research, please cite our repo:
 ```
-@misc{LLM Agent-Based Simulation of Student Activities and Mental
-Health Using Smartphone Sensing Data,
-  title={Student Life Analysis Pipeline},
+@misc{sommuang2025AgentStudentLife,
+  title={LLM Agent-Based Simulation of Student Activities and Mental
+Health Using Smartphone Sensing Data},
   author={Sommuang, Wayupuk and Kerdthaisong, Kun and Buakhaw, Pasin and Wong, Aslan B. and Yongsatianchot, Nutchanon},
   year={2025},
   url={https://github.com/DarthMouthStudentSimulator/DarthMouthStudentSimulator},
