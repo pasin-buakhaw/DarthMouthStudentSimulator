@@ -135,19 +135,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 
 ## 📚 Citation
-If you use this code in your research, please cite our paper:
+If you use this code in your research, please cite our repo:
 ```
-bibtex@misc{sommuang2025llm,
-  title={LLM Agent-Based Simulation of Student Activities and Mental Health Using Smartphone Sensing Data},
+@misc{LLM Agent-Based Simulation of Student Activities and Mental
+Health Using Smartphone Sensing Data,
+  title={Student Life Analysis Pipeline},
   author={Sommuang, Wayupuk and Kerdthaisong, Kun and Buakhaw, Pasin and Wong, Aslan B. and Yongsatianchot, Nutchanon},
-  series={UbiComp Companion '25},
   year={2025},
-  month={June},
-  publisher={ACM},
-  address={New York, NY, USA},
-  location={Espoo, Finland},
-  doi={10.1145/3714394.3750585},
-  url={https://doi.org/10.1145/3714394.3750585}
+  url={https://github.com/DarthMouthStudentSimulator/DarthMouthStudentSimulator},
+  note={GitHub repository}
 }
 ```
 
