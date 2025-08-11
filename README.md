@@ -137,14 +137,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📚 Citation
 If you use this code in your research, please cite our repo:
 ```
-@misc{sommuang2025AgentStudentLife,
-  title={LLM Agent-Based Simulation of Student Activities and Mental
-Health Using Smartphone Sensing Data},
-  author={Sommuang, Wayupuk and Kerdthaisong, Kun and Buakhaw, Pasin and Wong, Aslan B. and Yongsatianchot, Nutchanon},
-  year={2025},
-  url={https://github.com/DarthMouthStudentSimulator/DarthMouthStudentSimulator},
-  note={GitHub repository}
+@misc{2508.02679,
+Author = {Wayupuk Sommuang and Kun Kerdthaisong and Pasin Buakhaw and Aslan B. Wong and Nutchanon Yongsatianchot},
+Title = {LLM Agent-Based Simulation of Student Activities and Mental Health Using Smartphone Sensing Data},
+Year = {2025},
+Eprint = {arXiv:2508.02679},
 }
+
 ```
 
 ## 🙏 Acknowledgments
