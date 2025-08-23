@@ -66,7 +66,161 @@ class BigFiveAnalyzer:
             'A': row['Agreeableness'].values[0],
             'N': row['Neuroticism'].values[0]
         }
+    
 
+    @staticmethod
+    def compute_bigfive_scores_from_answers(answers: Dict[str, int]) -> Dict[str, Optional[float]]:
+        """
+        Compute Big Five scores from in-memory Likert responses.
+        Expects answers: {question_key: numeric_score (1-5)}.
+        """
+        if not answers:
+            return {
+                'Extraversion': None,
+                'Agreeableness': None,
+                'Conscientiousness': None,
+                'Neuroticism': None,
+                'Openness': None,
+            }
+
+        # Parse question numbers
+        col_number_map = {
+            col: int(col.split("-")[1].split(".")[0].strip())
+            for col in answers.keys()
+        }
+
+        reverse_items = {6, 21, 31, 2, 12, 27, 37, 8, 18, 23, 43, 9, 24, 34, 35, 41}
+        traits = {
+            'Extraversion': [1, 6, 11, 16, 21, 26, 31, 36],
+            'Agreeableness': [2, 7, 12, 17, 22, 27, 32, 37, 42],
+            'Conscientiousness': [3, 8, 13, 18, 23, 28, 33, 38, 43],
+            'Neuroticism': [4, 9, 14, 19, 24, 29, 34, 39],
+            'Openness': [5, 10, 15, 20, 25, 30, 35, 40, 41, 44],
+        }
+
+        # Reverse-code if needed
+        adjusted = {}
+        for col, score in answers.items():
+            qnum = col_number_map[col]
+            adjusted[col] = 6 - score if qnum in reverse_items else score
+
+        # Compute trait scores (scale to 100)
+        scores = {}
+        for trait, items in traits.items():
+            cols = [col for col, num in col_number_map.items() if num in items]
+            vals = [adjusted[col] for col in cols if adjusted[col] is not None]
+            scores[trait] = sum(vals) / len(vals) * 20 if vals else None
+
+        return scores
+
+
+    @staticmethod
+    def simulate_agent_likert_responses(
+        llm_client,
+        trait_df: pd.DataFrame,
+        uid: str,
+        questions: list,
+        likert_map=None,
+        max_retries=5
+    ) -> dict:
+        """
+        Simulate agent Likert responses for Big Five questions using LLM,
+        then compute and return the Big Five scores as a JSON object.
+
+        Args:
+            llm_client: LLMClient instance
+            trait_df: DataFrame with Big Five scores
+            uid: user ID to simulate
+            questions: list of question strings
+            likert_map: list of Likert options (default provided)
+            max_retries: max retries for invalid responses
+
+        Returns:
+            dict: Big Five scores for the agent
+        """
+        if likert_map is None:
+            likert_map = [
+                "Disagree Strongly",
+                "Disagree a little",
+                "Neither agree nor disagree",
+                "Agree a little",
+                "Agree strongly"
+            ]
+        likert_map_lower = {option.lower(): option for option in likert_map}
+        likert_score_map = {
+            "Disagree Strongly": 1,
+            "Disagree a little": 2,
+            "Neither agree nor disagree": 3,
+            "Agree a little": 4,
+            "Agree strongly": 5
+        }
+        def match_likert_response(answer):
+            answer_lower = answer.lower()
+            answer_clean = answer_lower.strip().rstrip('.').lower()
+            return likert_map_lower.get(answer_clean, None)
+
+        # Simulate agent responses
+        agent_row = {"uid": uid, "type": "agent"}
+        for q in questions:
+            valid_response = False
+            retries = 0
+            while not valid_response and retries < max_retries:
+                retries += 1
+                system_prompt = f"""You are a university student simulator with specific personality traits.
+You will answer Big Five Personality Test questions based on your given personality profile.
+
+Your Personality Profile:
+- Openness: {trait_df.loc[trait_df['uid'] == uid, 'Openness'].values[0]:.1f}
+- Conscientiousness: {trait_df.loc[trait_df['uid'] == uid, 'Conscientiousness'].values[0]:.1f}
+- Extraversion: {trait_df.loc[trait_df['uid'] == uid, 'Extraversion'].values[0]:.1f}
+- Agreeableness: {trait_df.loc[trait_df['uid'] == uid, 'Agreeableness'].values[0]:.1f}
+- Neuroticism: {trait_df.loc[trait_df['uid'] == uid, 'Neuroticism'].values[0]:.1f}
+
+Instructions:
+1. Answer each question as if you are a student with these exact personality traits.
+2. Be consistent with your personality profile across all questions.
+3. Choose from these exact options: {', '.join(likert_map)}.
+4. Return ONLY the chosen option text, nothing else.
+
+Remember: Answer authentically based on your personality profile, not what you think is "correct".
+
+Question: {q}
+"""
+                response = llm_client.generate(system_prompt)
+                try:
+                    if isinstance(response, dict) and "choices" in response:
+                        answer = response["choices"][0]["message"]["content"].strip()
+                    else:
+                        answer = response.strip()
+                    canonical_answer = match_likert_response(answer)
+                    if canonical_answer:
+                        agent_row[q] = canonical_answer
+                        valid_response = True
+                    else:
+                        print(f"[Retry {retries}] Invalid response: '{answer}' → retrying...")
+                except Exception as e:
+                    print(f"[Retry {retries}] Error: {e} → retrying...")
+            if not valid_response:
+                print(f"[FAILED] Could not get valid answer for '{q}' after {max_retries} tries.")
+                agent_row[q] = None
+
+        # Convert Likert responses to scores
+        scored_answers: Dict[str, Optional[int]] = {}
+        for q in questions:
+            choice = agent_row.get(q)
+            scored_answers[q] = likert_score_map.get(choice) if choice is not None else None
+
+        # Remove unanswered items before scoring
+        scored_payload: Dict[str, int] = {q: v for q, v in scored_answers.items() if v is not None}
+
+        # --- Delegate ALL scoring (incl. reverse-keying, scaling) to your scorer ---
+        # Adjust this call to match your scorer's signature if needed.
+        bigfive = BigFiveAnalyzer.compute_bigfive_scores_from_answers(scored_payload)
+
+        # Ensure return shape is consistent with your previous API
+        result = {'uid': uid, 'type': 'agent'}
+        result.update(bigfive)
+        return result
 
 class StudentAgent:
     def __init__(self, big_five: Dict[str, float], class_info: Dict, llm_client: LLMClient):

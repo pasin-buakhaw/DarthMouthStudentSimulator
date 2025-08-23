@@ -11,6 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from scripts.student import StudentLifePipeline
 
 load_dotenv()
+OPENAI_API = os.getenv("OPENAI_API")
 
 def get_matched_folders(base_path: str):
     """u01-u59"""
@@ -38,7 +39,7 @@ def main():
             "deadline_path": "./dataset/education/deadlines.csv",
             "uid": uid,
             "client_type": "openai",  # or "anthropic" or "openai"
-            "api_key": os.getenv("OPENAI_API", "..."),
+            "api_key": os.getenv("OPENAI_API", OPENAI_API),
         }
 
         required_files = [

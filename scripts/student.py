@@ -239,6 +239,24 @@ class StudentLifePipeline:
                     class_data_path = week_to_class.get(week_num)
                     result = self.process_student_week(uid, week_num, week_path, class_data_path)
                     results.append(result)
+
+        df = pd.read_csv(self.config["big_five_path"])
+        question_list = df.columns.drop(['uid', 'type']).tolist()
+        print("--------------------Simulation agent doing Big5-------------------")
+        simulated_scores = BigFiveAnalyzer.simulate_agent_likert_responses(
+            llm_client=self.llm_client,
+            trait_df=self.trait_df,
+            uid=uid,
+            questions=question_list
+        )
+
+       
+        # Save JSON file
+        output_path = f"./student_status/{uid}_simulated_agent_big5.json"
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(simulated_scores, f, ensure_ascii=False, indent=4)
+
+        print(f"Simulation completed. JSON saved to: {output_path}")
         
         return results
     
