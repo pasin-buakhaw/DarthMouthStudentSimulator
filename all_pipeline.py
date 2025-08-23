@@ -25,7 +25,7 @@ def get_matched_folders(base_path: str):
     return matched_folders
 
 def main():
-    base_path = "./student_info"
+    base_path = "./all_data"
     matched_folders = get_matched_folders(base_path)
     print("Matched folders:", matched_folders)
 
@@ -59,7 +59,7 @@ def main():
 
         pipeline = StudentLifePipeline(llm_client, config)
 
-        pipeline.run_full_pipeline(config["uid"], range(1, 11))
+        pipeline.run_full_pipeline(config["uid"], range(1, 11),range(1,8))
 
 
 

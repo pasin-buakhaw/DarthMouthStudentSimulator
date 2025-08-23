@@ -291,13 +291,13 @@ class StudentAgent:
             self.weekly_data['class_experience'].append(line)
     
     def generate_journal_entry(self, deadline_text: List[str] = None) -> str:
-        """Generate weekly journal entry"""
+        """Generate daily journal entry"""
         sensing_str = "\n".join([f"Day {i+1}:\n" + "\n".join(day) for i, day in enumerate(self.weekly_data['sensing_data'])])
         class_exp = "\n".join(self.weekly_data.get("class_experience", []))
         
         system_prompt = f"""You are a university student simulator.
         You will generate a self-reflection journal based on class schedule and real-world sensing data.
-        Write naturally and personally, as if you were the student reflecting on your week.
+        Write naturally and personally, as if you were the student reflecting on your day.
         Focus only on context - DO NOT add unnecessary elements like name or date.
 
         Personality:
@@ -321,12 +321,12 @@ class StudentAgent:
         Your Class Experience Summary:
         {class_exp}"""
 
-        user_prompt = f"""You are a university student. This is your weekly activity.
-        Sensing Data for Week:
+        user_prompt = f"""You are a university student. This is your daily activity.
+        Sensing Data for Today:
         (Each entry: Timestamp | Activity | Location | Location description)
         {sensing_str}
 
-        TASK: Reflect on your experience this week in class, on campus, and in your social life. How did you feel? Any challenges? What are your goals for next week?"""
+        TASK: Reflect on your experience today in class, on campus, and in your social life. How did you feel? Any challenges? What are your goals for toomorow?"""
 
         if deadline_text:
             system_prompt += f"\n\nHere are the upcoming deadlines:\n" + "\n".join(deadline_text)
@@ -364,7 +364,7 @@ Please generate a creative and feasible mobile app project idea that demonstrate
     def analyze_emotion(self, journal_text: str) -> Tuple[EmotionStatus, str]:
         """Analyze emotional state from journal entry"""
         system_prompt = f"""You are an emotional state analyzer.
-        Your task is to analyze a student's weekly self-reflection journal and infer their emotional state.
+        Your task is to analyze a student's daily self-reflection journal and infer their emotional state.
 
         You must:
         1. Output a Python dictionary with keys: ['stamina', 'knowledge', 'stress', 'happy', 'sleep', 'social']
