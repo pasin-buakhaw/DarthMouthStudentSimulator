@@ -12,7 +12,7 @@ from typing import Dict, List, Tuple
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+from scripts.simple_memory import EpisodicMemory
 from agents import LLMClient
 from scripts.tools import BigFiveAnalyzer, AcademicEvaluator, StudentAgent
 from models.model import EmotionStatus, AcademicScore
@@ -26,7 +26,6 @@ class StudentLifePipeline:
         self.config = config
         self.big_five_analyzer = BigFiveAnalyzer()
         self.academic_evaluator = AcademicEvaluator(llm_client)
-        
         self._load_data()
     
     def _load_data(self):
@@ -168,9 +167,16 @@ class StudentLifePipeline:
             getattr(student, container_key)["class_experience"] = ["(No class experience recorded for this day.)"]
 
         # ---------- Journal & emotion analysis ----------
-        journal = student.generate_journal_entry(deadline_text)
+        if self.config.get("setup") == "agent":
+            memory = EpisodicMemory(uid)
+            recent_memories = memory.retrieve_recent(week=week_num,day=day_num)
+            journal = student.generate_journal_entry(deadline_text,recent_memories)
+            
+        
+        if self.config.get("setup") == "llm":
+            journal = student.generate_journal_entry(deadline_text)
+           
         emotion_status, reasoning = student.analyze_emotion(journal)
-
         # ---------- Academic evaluation (day-aware if available) ----------
         try:
             if hasattr(self.academic_evaluator, "evaluate_daily_exam"):
@@ -287,15 +293,32 @@ class StudentLifePipeline:
 
         # ===== After finishing all days in the current week → run Big Five once =====
         print("-------------------- Simulation agent doing Big5 (end of week) -------------------")
-        simulated_scores = BigFiveAnalyzer.simulate_agent_likert_responses(
+        if self.config.get("setup") == "agent":
+            
+            
+            summary_text  = BigFiveAnalyzer.summarize_journal(uid_id  = self.uid,llm_client= self.config.get("llm_client"))
+           
+            simulated_scores = BigFiveAnalyzer.simulate_agent_likert_responses(
+                    llm_client=self.llm_client,
+                    trait_df=self.trait_df,
+                    uid=uid,
+                    questions=question_list,
+                    setup = self.config.get("setup"),
+                    summarize_journal_text = summary_text 
+
+                )
+        if self.config.get("setup") == "llm":
+         simulated_scores = BigFiveAnalyzer.simulate_agent_likert_responses(
                 llm_client=self.llm_client,
                 trait_df=self.trait_df,
                 uid=uid,
-                questions=question_list
+                questions=question_list,
+                setup = self.config.get("setup")
             )
 
             # Save per-week Big Five simulation to avoid overwriting
-        output_path = f"./student_status/{uid}_simulated_agent_big5.json"
+        os.makedirs("./student_status/{uid}", exist_ok=True)
+        output_path = f"./student_status/{self.config.get('setup')}_{uid}_simulated_agent_big5.json"
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(simulated_scores, f, ensure_ascii=False, indent=4)
 

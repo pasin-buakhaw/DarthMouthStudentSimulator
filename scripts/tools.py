@@ -4,7 +4,7 @@ import pandas as pd
 from typing import Dict, List, Tuple, Optional
 import ast
 import re
-
+import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from agents import LLMClient
@@ -26,6 +26,7 @@ class BigFiveAnalyzer:
         
         scored_df = df.copy()
         scored_df.iloc[:, 2:] = scored_df.iloc[:, 2:].replace(likert_map)
+       
         
         reverse_items = {6, 21, 31, 2, 12, 27, 37, 8, 18, 23, 43, 9, 24, 34, 35, 41} #List of reverse score question
         question_columns = scored_df.columns[2:]
@@ -120,9 +121,11 @@ class BigFiveAnalyzer:
         trait_df: pd.DataFrame,
         uid: str,
         questions: list,
+        *,
         likert_map=None,
-        max_retries=5
-    ) -> dict:
+        max_retries=5,
+        setup: str,
+        summarize_journal_text=None) -> dict:
         """
         Simulate agent Likert responses for Big Five questions using LLM,
         then compute and return the Big Five scores as a JSON object.
@@ -184,9 +187,10 @@ Instructions:
 
 Remember: Answer authentically based on your personality profile, not what you think is "correct".
 
-Question: {q}
 """
-                response = llm_client.generate(system_prompt)
+                if summarize_journal_text:
+                    system_prompt += f"\nYour Recent Memories:\n{summarize_journal_text}\n"
+                response = llm_client.generate(prompt ="Question : " + q,system_prompt = system_prompt)
                 try:
                     if isinstance(response, dict) and "choices" in response:
                         answer = response["choices"][0]["message"]["content"].strip()
@@ -218,9 +222,67 @@ Question: {q}
         bigfive = BigFiveAnalyzer.compute_bigfive_scores_from_answers(scored_payload)
 
         # Ensure return shape is consistent with your previous API
-        result = {'uid': uid, 'type': 'agent'}
+        result = {'uid': uid, 'type': setup}
         result.update(bigfive)
         return result
+    @staticmethod
+    def summarize_journal(uid_id: str, llm_client) -> Dict:
+        """
+        Summarize student history for prompting in Big Five simulation.
+        """
+        filename = f"{uid_id}_emotion_status_history.jsonl"
+
+        try:
+            with open(filename, 'r') as f:
+                school_memory = [json.loads(line) for line in f if line.strip()]
+        except FileNotFoundError:
+            return {
+                "uid": uid_id,
+                "summary": "No memory file found."
+            }
+
+        if not school_memory:
+            return {
+                "uid": uid_id,
+                "summary": "No memory entries available."
+            }
+
+        memory_strings = []
+        for memory in school_memory:
+            week = memory.get("week", "?")
+            day = memory.get("day", "?")
+            lab_assessment = memory.get("text", "")
+            daily_desc = memory.get("daily_desc", "")
+            memory_strings.append(
+                f"Week {week}, Day {day} — Lab: {lab_assessment}\nNote: {daily_desc}"
+            )
+
+        joined_memories = "\n\n".join(memory_strings)
+
+    
+        summary_prompt = (
+        "You are an AI assistant specialized in analyzing university student experiences and personal reflections.\n"
+        "Below are memory entries from a university student documenting their academic journey, personal growth, and campus life.\n"
+        "Analyze these memories to create a comprehensive summary that captures:\n\n"
+        "1. **Academic Journey**: Course experiences, learning challenges, study habits, and intellectual development\n"
+        "2. **Social Dynamics**: Friendships, relationships, campus involvement, and social adaptation\n"
+        "3. **Personal Growth**: Emotional development, self-discovery, independence, and life transitions\n"
+        "4. **Recurring Themes**: Patterns in behavior, thought processes, values, and priorities\n"
+        "5. **Emotional Landscape**: Predominant feelings, stress points, moments of joy, and coping mechanisms\n"
+        "6. **Challenges & Resilience**: Academic struggles, social difficulties, personal obstacles, and how they were addressed\n\n"
+        "Focus on creating a coherent narrative that shows the student's evolution and key experiences that shaped their university years.\n\n"
+        f"{joined_memories}\n\n"
+        "Provide a thoughtful analysis that helps the student understand their own journey and growth patterns:\n"
+    )
+
+       
+        
+        summary = llm_client.generate(summary_prompt)
+        return {
+            "uid": uid_id,
+            "summary": summary
+        }
+
 
 class StudentAgent:
     def __init__(self, big_five: Dict[str, float], class_info: Dict, llm_client: LLMClient):
@@ -290,7 +352,7 @@ class StudentAgent:
             )
             self.weekly_data['class_experience'].append(line)
     
-    def generate_journal_entry(self, deadline_text: List[str] = None) -> str:
+    def generate_journal_entry(self, deadline_text: List[str] = None ,memory_context: List[str] = None) -> str:
         """Generate daily journal entry"""
         sensing_str = "\n".join([f"Day {i+1}:\n" + "\n".join(day) for i, day in enumerate(self.weekly_data['sensing_data'])])
         class_exp = "\n".join(self.weekly_data.get("class_experience", []))
@@ -330,7 +392,10 @@ class StudentAgent:
 
         if deadline_text:
             system_prompt += f"\n\nHere are the upcoming deadlines:\n" + "\n".join(deadline_text)
-        
+
+        if memory_context:
+            system_prompt += "\n\nRecent Memories:\n" + "\n".join([json.dumps(m) for m in memory_context])
+
         return self.llm_client.generate(user_prompt, system_prompt)
     
     def generate_project_submission(self) -> str:
@@ -558,3 +623,5 @@ class AcademicEvaluator:
             "score": score,
             "feedback": response
         }
+    
+    
