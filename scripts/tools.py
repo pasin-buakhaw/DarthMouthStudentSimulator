@@ -169,15 +169,15 @@ class BigFiveAnalyzer:
             retries = 0
             while not valid_response and retries < max_retries:
                 retries += 1
-                system_prompt = f"""You are a university student simulator with specific personality traits.
+                system_prompt = f"""You are a university student.
 You will answer Big Five Personality Test questions based on your given personality profile.
 
 Your Personality Profile:
-- Openness: {trait_df.loc[trait_df['uid'] == uid, 'Openness'].values[0]:.1f}
-- Conscientiousness: {trait_df.loc[trait_df['uid'] == uid, 'Conscientiousness'].values[0]:.1f}
-- Extraversion: {trait_df.loc[trait_df['uid'] == uid, 'Extraversion'].values[0]:.1f}
-- Agreeableness: {trait_df.loc[trait_df['uid'] == uid, 'Agreeableness'].values[0]:.1f}
-- Neuroticism: {trait_df.loc[trait_df['uid'] == uid, 'Neuroticism'].values[0]:.1f}
+- Openness: f"{trait_df.loc[(trait_df['uid'] == uid) & (trait_df['type'] == 'pre'), 'Openness'].values[0]:.1f}"
+- Conscientiousness: f"{trait_df.loc[(trait_df['uid'] == uid) & (trait_df['type'] == 'pre'), 'Conscientiousness'].values[0]:.1f}"
+- Extraversion: f"{trait_df.loc[(trait_df['uid'] == uid) & (trait_df['type'] == 'pre'), 'Extraversion'].values[0]:.1f}"
+- Agreeableness: f"{trait_df.loc[(trait_df['uid'] == uid) & (trait_df['type'] == 'pre'), 'Agreeableness'].values[0]:.1f}"
+- Neuroticism: f"{trait_df.loc[(trait_df['uid'] == uid) & (trait_df['type'] == 'pre'), 'Neuroticism'].values[0]:.1f}"
 
 Instructions:
 1. Answer each question as if you are a student with these exact personality traits.
