@@ -296,7 +296,7 @@ class StudentLifePipeline:
         if self.config.get("setup") == "agent":
             
             
-            summary_text  = BigFiveAnalyzer.summarize_journal(uid_id  = self.uid,llm_client= self.config.get("llm_client"))
+            summary_text  = BigFiveAnalyzer.summarize_journal(uid_id  = uid,llm_client= self.llm_client)
            
             simulated_scores = BigFiveAnalyzer.simulate_agent_likert_responses(
                     llm_client=self.llm_client,

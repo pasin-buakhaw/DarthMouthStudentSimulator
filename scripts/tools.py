@@ -261,8 +261,8 @@ Remember: Answer authentically based on your personality profile, not what you t
 
     
         summary_prompt = (
-        "You are an AI assistant specialized in analyzing university student experiences and personal reflections.\n"
-        "Below are memory entries from a university student documenting their academic journey, personal growth, and campus life.\n"
+        "You are a university student.\n"
+        "Below are your memory entries from a university student documenting their academic journey, personal growth, and campus life.\n"
         "Analyze these memories to create a comprehensive summary that captures:\n\n"
         "1. **Academic Journey**: Course experiences, learning challenges, study habits, and intellectual development\n"
         "2. **Social Dynamics**: Friendships, relationships, campus involvement, and social adaptation\n"
@@ -274,14 +274,19 @@ Remember: Answer authentically based on your personality profile, not what you t
         f"{joined_memories}\n\n"
         "Provide a thoughtful analysis that helps the student understand their own journey and growth patterns:\n"
     )
-
-       
-        
         summary = llm_client.generate(summary_prompt)
-        return {
+        result = {
             "uid": uid_id,
             "summary": summary
         }
+        output_dir = "./summary_jornal"
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, f"{uid_id}.json")
+        with open(output_path, 'w', encoding='utf-8') as out_f:
+            json.dump(result, out_f, ensure_ascii=False, indent=4)
+        
+        summary = llm_client.generate(summary_prompt)
+        return result
 
 
 class StudentAgent:
